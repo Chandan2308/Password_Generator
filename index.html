@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            width: 550px;
+            height: 550px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+        input, button {
+            padding: 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+        input[type="number"] {
+            text-align: center;
+            width: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+        button {
+            background: #ff5722;
+            color: white;
+            cursor: pointer;
+            width: 50%;
+            padding: 12px;
+            display: block;
+            margin: 0 auto;
+            font-size: 20px;
+        }
+        button:hover {
+            background: #e64a19;
+        }
+        #password {
+            background: #333;
+            padding: 16px;
+            border-radius: 5px;
+            word-break: break-all;
+            font-size: 1.6em;
+        }
+        #copybtn {
+            display: none;
+            background: #4caf50;
+            font-size: 20px;
+        }
+        #copybtn:hover {
+            background: #388e3c;
+        }
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            font-size: 20px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Generator</h1>
+        <label for="len">Password Length (6-18):</label>
+        <input type="number" id="len" min="6" max="12" placeholder="Enter length" />
+
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="uc"> Uppercase Letters</label>
+            <label><input type="checkbox" id="dig"> Include Digits</label>
+            <label><input type="checkbox" id="sc"> Special Characters</label>
+        </div>
+        
+        <button onclick="generatePassword()">Generate Password</button>
+        <div id="password"></div>
+        <button id="copybtn" onclick="copyText()"><i class="bi bi-clipboard"></i> Copy</button>
+    </div>
+
+    <script>
+        function generatePassword() {
+            let len_el = document.getElementById("len");
+            let len = len_el.value;
+            let upperCase = document.getElementById("uc").checked;
+            let digits = document.getElementById("dig").checked;
+            let specialChar = document.getElementById("sc").checked;
+            let output = document.getElementById("password");
+            let copyBtn = document.getElementById("copybtn");
+            
+            if (!len || len < 6 || len > 18) {
+                alert("Please enter a length between 6 and 18.");
+                output.textContent = ""
+                len_el.focus();
+                document.querySelector("#copybtn").style.display = "none";
+                return;
+            }
+            
+            let chars = "abcdefghijklmnopqrstuvwxyz";
+            if (upperCase) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            if (digits) chars += "0123456789";
+            if (specialChar) chars += "!@#$%^&*()_+-={}[]|:;<>?,.";
+            
+            let password = "";
+            for (let i = 0; i < len; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            output.textContent = password;
+            copyBtn.style.display = "block";
+        }
+        
+        function copyText() {
+            let passwordText = document.getElementById("password").textContent;
+            let textArea = document.createElement("textarea");
+            textArea.value = passwordText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand("copy");
+                alert("Password copied!");
+            } catch (err) {
+                console.error("Copy failed", err);
+            }
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+</html>
